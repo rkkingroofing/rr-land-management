@@ -1,0 +1,20 @@
+/**
+ * Cloudflare Workers configuration.
+ *
+ * The build runs `npx @cloudflare/next-on-pages@1` which produces:
+ *   .vercel/output/static/_worker.js/index.js   <-- Worker entry
+ *   .vercel/output/static/...                   <-- everything else (static assets)
+ *
+ * This file tells `wrangler deploy` to use that layout.
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "rr-land-management",
+  "main": ".vercel/output/static/_worker.js/index.js",
+  "compatibility_date": "2026-05-07",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".vercel/output/static",
+    "binding": "ASSETS"
+  }
+}
