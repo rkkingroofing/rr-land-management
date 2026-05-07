@@ -10,5 +10,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .vercel
+.wrangler
 *.tsbuildinfo
 next-env.d.ts

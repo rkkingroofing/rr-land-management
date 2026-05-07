@@ -138,31 +138,52 @@ Same shape as Resend. Use `@sendgrid/mail`. SendGrid's free tier is more limited
 
 ---
 
-## Deploying to Vercel
+## Deploying to Cloudflare Pages
 
-The repo is set up to deploy as-is.
+The repo is set up for Cloudflare Pages with the `@cloudflare/next-on-pages` adapter. All API routes use the edge runtime so they run on Cloudflare Workers.
 
 ### First-time deploy
 
 1. Push the project to GitHub (private repo is fine)
-2. Go to [vercel.com/new](https://vercel.com/new), import the repo
-3. Vercel auto-detects Next.js — click **Deploy**. No configuration needed.
-4. After the first deploy, Vercel gives you a `*.vercel.app` URL. Test it.
+2. Go to [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
+3. Pick the GitHub repo, click **Begin setup**
+4. Configure the build:
+   - **Framework preset**: Next.js
+   - **Build command**: `npx @cloudflare/next-on-pages@1`
+   - **Build output directory**: `.vercel/output/static`
+   - **Root directory**: leave blank (or `site/` if the repo's root is somewhere above)
+   - **Environment variables** → add `NODE_VERSION` = `20`
+5. **Save and Deploy**
+6. After the first deploy, go to **Settings → Functions** and add this **Compatibility flag** for both Production and Preview: `nodejs_compat`. Then redeploy (Deployments → ⋯ → Retry deployment).
+7. You get a `*.pages.dev` URL — test it.
 
-### Custom domain
+### Custom domain (Cloudflare DNS)
 
-1. In Vercel: Project → Settings → Domains → Add `rrlandmanagement.com` (or whatever domain you choose)
-2. Vercel shows you DNS records to add at your registrar (GoDaddy, Namecheap, etc.)
-3. Add the DNS records, wait ~10 minutes, Vercel verifies and HTTPS auto-provisions
-4. Update `site.url` in [`content/site.ts`](content/site.ts) to the live domain — this affects the sitemap, JSON-LD schema, and OG tags
+If your domain is already on Cloudflare:
+
+1. Pages project → **Custom domains** → **Set up a custom domain**
+2. Enter `rrlandmanagement.com` (and `www.rrlandmanagement.com` separately if you want both)
+3. Cloudflare auto-creates the CNAME records since DNS is already on their side. HTTPS provisions automatically.
+4. Update `site.url` in [`content/site.ts`](content/site.ts) to the live domain — this affects the sitemap, JSON-LD schema, and OG tags.
 
 ### Subsequent deploys
 
-Just push to your `main` branch. Vercel auto-rebuilds.
+Just push to your `main` branch. Cloudflare Pages auto-rebuilds.
 
 ### Environment variables
 
-If you wire up an email service, add the API key in Vercel: Project → Settings → Environment Variables → New. Apply to **Production**, **Preview**, and **Development** as appropriate.
+If you wire up an email service, add the API key in Cloudflare: Pages project → **Settings → Environment variables** → **Add variable**. Apply to **Production** and **Preview**.
+
+### Local Cloudflare-style preview
+
+To test the Cloudflare build locally before pushing:
+
+```bash
+npm run pages:build
+npx wrangler pages dev .vercel/output/static
+```
+
+This catches edge-runtime issues that `next dev` won't.
 
 ---
 

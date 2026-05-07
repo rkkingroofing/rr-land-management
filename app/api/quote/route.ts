@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { QuoteFormSchema } from '@/lib/schema';
 
-export const runtime = 'nodejs';
+// Cloudflare Pages runs on Workers — must use the edge runtime.
+export const runtime = 'edge';
 
 /**
  * Quote form handler.
