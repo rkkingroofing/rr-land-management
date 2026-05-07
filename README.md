@@ -98,6 +98,20 @@ Videos play inline in the gallery with a "Video" badge. To add one:
    },
    ```
 
+**⚠ 25 MB asset limit.** Cloudflare Pages refuses any single file over 25 MB. After encoding, check size:
+
+```bash
+ls -la public/gallery/*.mp4 | awk '{printf "%5.1f MB  %s\n", $5/1048576, $9}'
+```
+
+If any video is over ~23 MB, re-encode at lower bitrate:
+
+```bash
+ffmpeg -i original.MOV -vf "scale='min(1080,iw)':-2" -c:v libx264 -preset slow -crf 30 -movflags +faststart -an your-video.mp4
+```
+
+Drop CRF higher (32, 34) if still too big. Quality difference is barely perceptible for outdoor work footage.
+
 ---
 
 ## Wiring up the contact form to real email
