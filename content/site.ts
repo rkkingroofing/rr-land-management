@@ -8,7 +8,7 @@ export const site = {
   founded: 2018,
   yearsExperience: '10+',
 
-  url: 'https://rrlandmanagement.com', // TODO: update when domain is live
+  url: 'https://rrlandmanagement.net',
 
   address: {
     city: 'Seymour',
